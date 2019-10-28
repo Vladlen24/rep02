@@ -23,8 +23,8 @@ class ball():
         self.x = x
         self.y = y
         self.r = 10
-        self.vx = 0
-        self.vy = 0
+        self.vx = 5
+        self.vy = 5
         self.color = choice(['blue', 'green', 'red', 'brown'])
         self.id = canv.create_oval(
                 self.x - self.r,
@@ -52,8 +52,21 @@ class ball():
         и стен по краям окна (размер окна 800х600).
         """
         # FIXME
-        self.x += self.vx
-        self.y -= self.vy
+        #self.x += self.vx
+        #self.y -= self.vy
+
+        #c.delete(ALL)
+        self.x += self.vx*0.2
+        self.y += self.vy*0.2
+        if ((self.x <= self.r and self.vx<0) or (self.x >= 800-self.r and self.vx>0)):
+            self.vx = (-1)*self.vx
+            self.x += self.vx*0.2
+            self.y += self.vy*0.2
+        if ((self.y <= self.r and self.vy<0) or  (self.y >= 800-self.r and self.vy>0)):
+            self.vy = (-1)*self.vy
+            self.x += self.vx*0.2
+            self.y += self.vy*0.2
+
 
     def hittest(self, obj):
         """Функция проверяет сталкивалкивается ли данный обьект с целью, описываемой в обьекте obj.
