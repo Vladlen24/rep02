@@ -51,9 +51,6 @@ class ball():
         self.x и self.y с учетом скоростей self.vx и self.vy, силы гравитации, действующей на мяч,
         и стен по краям окна (размер окна 800х600).
         """
-        # FIXME
-        #self.x += self.vx
-        #self.y -= self.vy
 
         #canv.delete(ALL)
         self.x += self.vx*0.2
@@ -61,11 +58,11 @@ class ball():
         if ((self.x <= self.r and self.vx<0) or (self.x >= 800-self.r and self.vx>0)):
             self.vx = (-1)*self.vx
             self.x += self.vx*0.2
-            self.y += self.vy*0.2
+            self.y += self.vy*0.2 + 10
         if ((self.y <= self.r and self.vy<0) or  (self.y >= 800-self.r and self.vy>0)):
             self.vy = (-1)*self.vy
             self.x += self.vx*0.2
-            self.y += self.vy*0.2
+            self.y += self.vy*0.2 + 10
 
         self.set_coords()
         #root.after(1,move())
