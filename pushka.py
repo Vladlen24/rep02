@@ -55,7 +55,7 @@ class ball():
         #self.x += self.vx
         #self.y -= self.vy
 
-        #c.delete(ALL)
+        #canv.delete(ALL)
         self.x += self.vx*0.2
         self.y += self.vy*0.2
         if ((self.x <= self.r and self.vx<0) or (self.x >= 800-self.r and self.vx>0)):
@@ -66,6 +66,10 @@ class ball():
             self.vy = (-1)*self.vy
             self.x += self.vx*0.2
             self.y += self.vy*0.2
+
+        self.set_coords()
+        #root.after(1,move())
+
 
 
     def hittest(self, obj):
