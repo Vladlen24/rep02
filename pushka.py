@@ -55,14 +55,16 @@ class ball():
         #canv.delete(ALL)
         self.x += self.vx*0.2
         self.y += self.vy*0.2
+        self.vy += 1
+        self.live -= 0.1
         if ((self.x <= self.r and self.vx<0) or (self.x >= 800-self.r and self.vx>0)):
-            self.vx = (-1)*self.vx
+            self.vx = (-0.97)*self.vx
             self.x += self.vx*0.2
-            self.y += self.vy*0.2 + 10
-        if ((self.y <= self.r and self.vy<0) or  (self.y >= 800-self.r and self.vy>0)):
-            self.vy = (-1)*self.vy
+            self.y += self.vy*0.2
+        if ((self.y <= self.r and self.vy<0) or  (self.y >= 600-self.r and self.vy>0)):
+            self.vy = (-0.7)*self.vy
             self.x += self.vx*0.2
-            self.y += self.vy*0.2 + 10
+            self.y += self.vy*0.2
 
         self.set_coords()
         #root.after(1,move())
@@ -105,8 +107,8 @@ class gun():
         new_ball = ball()
         new_ball.r += 5
         self.an = math.atan((event.y-new_ball.y) / (event.x-new_ball.x))
-        new_ball.vx = self.f2_power * math.cos(self.an)
-        new_ball.vy = - self.f2_power * math.sin(self.an)
+        new_ball.vx =  self.f2_power * math.cos(self.an)
+        new_ball.vy =  self.f2_power * math.sin(self.an)
         balls += [new_ball]
         self.f2_on = 0
         self.f2_power = 10
@@ -138,7 +140,7 @@ class target():
     def __init__(self):
         self.points = 0
         self.live = 1
-        # FIXME: don't work!!! How to call this functions when object is created?
+        self.vy = 10
         self.id = canv.create_oval(0,0,0,0)
         self.id_points = canv.create_text(30,30,text = self.points,font = '28')
         self.new_target()
@@ -158,8 +160,27 @@ class target():
         self.points += points
         canv.itemconfig(self.id_points, text=self.points)
 
+    def set_coords(self):
+        canv.coords(
+                self.id,
+                self.x - self.r,
+                self.y - self.r,
+                self.x + self.r,
+                self.y + self.r
+        )
+
+    def move(self):
+
+        self.y += self.vy*0.2
+        if ((self.y <= self.r and self.vy<0) or  (self.y >= 600-self.r and self.vy>0)):
+            self.vy = (-0.96)*self.vy
+            self.y += self.vy*0.2
+
+        self.set_coords()
+
 
 t1 = target()
+t2 = target()
 screen1 = canv.create_text(400, 300, text='', font='28')
 g1 = gun()
 bullet = 0
@@ -167,22 +188,39 @@ balls = []
 
 
 def new_game(event=''):
-    global gun, t1, screen1, balls, bullet
+    global gun, t1, t2, screen1, balls, bullet
     t1.new_target()
+    t2.new_target()
     bullet = 0
     balls = []
     canv.bind('<Button-1>', g1.fire2_start)
     canv.bind('<ButtonRelease-1>', g1.fire2_end)
     canv.bind('<Motion>', g1.targetting)
 
+
     z = 0.03
     t1.live = 1
-    while t1.live or balls:
+    t2.live = 1
+    while t1.live or t2.live or balls:
+        t1.move()
+        t2.move()
         for b in balls:
             b.move()
+            if b.live <= 0:
+                balls.pop(balls.index(b))
+                #canv.delete(ALL)
+                #canv.delete(balls.index(b))
+                #canv.pack(fill=tk.BOTH, expand=1)
+                canv.delete(b.id)
             if b.hittest(t1) and t1.live:
                 t1.live = 0
                 t1.hit()
+                canv.delete(t1.id)
+            if b.hittest(t2) and t2.live:
+                t2.live = 0
+                t2.hit()
+                canv.delete(t2.id)
+            if t1.live == 0 and t2.live == 0:
                 canv.bind('<Button-1>', '')
                 canv.bind('<ButtonRelease-1>', '')
                 canv.itemconfig(screen1, text='Вы уничтожили цель за ' + str(bullet) + ' выстрелов')
