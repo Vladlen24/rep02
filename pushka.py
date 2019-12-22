@@ -58,7 +58,7 @@ class ball():
         self.vy += 1
         self.live -= 0.1
         if ((self.x <= self.r and self.vx<0) or (self.x >= 800-self.r and self.vx>0)):
-            self.vx = (-0.97)*self.vx
+            self.vx = (-0.87)*self.vx
             self.x += self.vx*0.2
             self.y += self.vy*0.2
         if ((self.y <= self.r and self.vy<0) or  (self.y >= 600-self.r and self.vy>0)):
@@ -185,7 +185,8 @@ screen1 = canv.create_text(400, 300, text='', font='28')
 g1 = gun()
 bullet = 0
 balls = []
-
+name = tk.Entry(textvariable = tk.StringVar())
+name.place(relx=.5, rely=.1, anchor="c")
 
 def new_game(event=''):
     global gun, t1, t2, screen1, balls, bullet
@@ -230,11 +231,15 @@ def new_game(event=''):
         g1.power_up()
     canv.itemconfig(screen1, text='')
     canv.delete(gun)
+    f = open('bestplayers.txt','a')
+    if (name.get() != ''):
+        f.write(name.get()+' '+str(bullet)+'\n')
+    f.close()
     root.after(750, new_game)
 
 
 new_game()
 
-print(targert.x)
+#print(targert.x)
 
-mainloop()
+#mainloop()
